@@ -1,10 +1,11 @@
-FROM ethereum/client-go:alltools-latest
+FROM ethereum/client-go:alltools-release-1.13
 
 WORKDIR /app
 
 COPY ./config/genesis.json /app/genesis.json
 
 
+COPY ./config/client-start.sh /app
 COPY ./config/client-start.sh /app
 RUN chmod u+x /app/client-start.sh
 RUN adduser -D -g '' geth

@@ -8,11 +8,11 @@ if [ ! -d "$DIR" ]; then
   geth init --datadir=/app/datadir /app/genesis.json 
 
   
-  echo "[\"enode://${ENODEPUB_1}@signer-1:30303\",\"enode://${ENODEPUB_2}@signer-2:30303\"]" > /app/datadir/static-nodes.json
+  # echo "[\"enode://${ENODEPUB_1}@signer-1:30303\",\"enode://${ENODEPUB_2}@signer-2:30303\"]" > /app/datadir/static-nodes.json
 fi
-sleep 3;
+sleep 10;
 
 ipaddress=$(hostname -i)
 
-geth --bootnodes "enode://${ENODEPUB_1}@signer-1:30303,enode://${ENODEPUB_2}@signer-2:30303" --networkid="${NETWORK_CHAIN_ID}" --datadir=/app/datadir --http --http.addr="0.0.0.0" --http.port="8545" --http.corsdomain="*" --http.vhosts="*" --http.api="eth,net,web3,debug,txpool,trace" --ws  --ws.origins="*" --ws.addr="0.0.0.0" --ws.port="8546" --syncmode "full" --gcmode archive --nat extip:${ipaddress} --identity "Morpher Dev Demo Network"
+geth --bootnodes "enode://${ENODEPUB_1}@signer-1:30303,enode://${ENODEPUB_2}@signer-2:30303" --networkid="${NETWORK_CHAIN_ID}" --datadir=/app/datadir --http --http.addr="0.0.0.0" --http.port="8545" --http.corsdomain="*" --http.vhosts="*" --http.api="eth,net,web3,debug,txpool,trace" --ws  --ws.origins="*" --ws.addr="0.0.0.0" --ws.port="8546" --syncmode "full" --gcmode archive --nat extip:${ipaddress} --identity "Aura Dev Network"
 

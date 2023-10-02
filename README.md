@@ -65,3 +65,18 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE
+
+
+
+sudo rm -rf data
+mkdir -p data  data/eth-data-1  data/eth-data-2  data/eth-data-3  data/eth-data-4
+chmod 777 -R data
+
+docker volume rm $(docker volume ls -q)
+
+docker compose up -d --build
+
+admin.addPeer("enode://edc108a5f881b8aed1df5bf98917eff5528febc25c81d9b4b6de812efb6374214b1cab5f2dcea7a83b1333a9c16f05ed542818cee5e10492a39966cba421ecce@signer-1:30303")
+admin.addPeer("enode://373c69f61dd07c6e63667cd075222e3b0a69712a8d33264395a20165d9a505001f3ce232f312388fe0d1af1060f4d458494e3b4fa0259dd415f7ead3972c0d78@signer-2:30303")
+
+

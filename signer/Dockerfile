@@ -1,4 +1,4 @@
-FROM ethereum/client-go:alltools-latest
+FROM ethereum/client-go:alltools-release-1.13
 
 WORKDIR /app
 

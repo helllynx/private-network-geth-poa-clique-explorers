@@ -19,7 +19,8 @@ services:
       ENODEPUB_2: ${ENODEPUB_2}
       NETWORK_CHAIN_ID: ${NETWORK_CHAIN_ID}
     volumes:
-      - eth-data-1:/app/datadir
+      - ./data/eth-data-1:/app/datadir
+
   signer-2:
     hostname: signer-2
     build:
@@ -33,9 +34,10 @@ services:
       ENODEPUB_2: ${ENODEPUB_2}
       NETWORK_CHAIN_ID: ${NETWORK_CHAIN_ID}
     volumes:
-      - eth-data-2:/app/datadir
+      - ./data/eth-data-2:/app/datadir
     depends_on:
       - signer-1
+
   client-1:
     hostname: client-1
     build:
@@ -49,7 +51,7 @@ services:
       - "8545:8545"
       - "8546:8546"
     volumes:
-      - eth-data-3:/app/datadir
+      - ./data/eth-data-3:/app/datadir
     depends_on:
       - signer-1
       - signer-2
@@ -67,9 +69,10 @@ services:
       - "8547:8545"
       - "8548:8546"
     volumes:
-      - eth-data-4:/app/datadir
+      - ./data/eth-data-4:/app/datadir
     depends_on:
       - signer-1
+      - signer-2
 
   explorer:
     build:
@@ -82,64 +85,65 @@ services:
     depends_on:
       - client-1
 
-  ethereum-lite-explorer:
-    depends_on:
-      - client-1
-    image: alethio/ethereum-lite-explorer
-    environment:
-      - APP_NODE_URL=ws://localhost:8546
-    ports:
-      - "8081:80"
+  # ethereum-lite-explorer:
+  #   depends_on:
+  #     - client-1
+  #   image: alethio/ethereum-lite-explorer
+  #   environment:
+  #     - APP_NODE_URL=ws://localhost:8546
+  #   ports:
+  #     - "8081:80"
 
-  blockscout:
-    hostname: blockscout
-    depends_on:
-      - client-1
-      - db
-    # image: blockscout
-    build:
-      context: ./blockscout
-      args:
-        COIN: tETH
-    restart: on-failure
-    env_file:
-      - ./blockscout/common-blockscout.env
-    environment:
-      ETHEREUM_JSONRPC_VARIANT: geth
-      BLOCK_TRANSFORMER: clique
-      ETHEREUM_JSONRPC_HTTP_URL: http://client-1:8545/
-      ETHEREUM_JSONRPC_WS_URL: ws://client-1:8546
-      DATABASE_URL: postgresql://postgres:@db:5432/blockscout?ssl=false
-      ECTO_USE_SSL: "false"
-      SUBNETWORK: "Dev"
-      SECRET_KEY_BASE: VTIB3uHDNbvrY0+60ZWgUoUBKDn9ppLR8MI4CpRz4/qLyEFs54ktJfaNT6Z221No
-      DISABLE_EXCHANGE_RATES: "true"
-      INDEXER_DISABLE_BLOCK_REWARD_FETCHER: "true"
-      LINK_TO_OTHER_EXPLORERS: "false"
-      SUPPORTED_CHAINS: "[]"
-      APPS_MENU: 0
-      HIDE_FOOTER: 1
-      SHOW_DASHBOARD_GRAPH: 0
-      INDEXER_DISABLE_PENDING_TRANSACTIONS_FETCHER: 1
-      INDEXER_MEMORY_LIMIT: 2
-      SHOW_ADDRESS_MARKETCAP_PERCENTAGE: 0
-      DISABLE_READ_API: 0
-      DISABLE_WRITE_API: 0
-    ports:
-      - 8082:4000
-  db:
-    image: postgres:13.6
-    restart: always
-    container_name: 'postgres'
-    environment:
-        POSTGRES_PASSWORD: ''
-        POSTGRES_USER: 'postgres'
-        POSTGRES_HOST_AUTH_METHOD: 'trust'
-    # ports:
-    #   - 7432:5432
+  # blockscout:
+  #   hostname: blockscout
+  #   depends_on:
+  #     - client-1
+  #     - db
+  #   # image: blockscout
+  #   build:
+  #     context: ./blockscout
+  #     args:
+  #       COIN: tETH
+  #   restart: on-failure
+  #   env_file:
+  #     - ./blockscout/common-blockscout.env
+  #   environment:
+  #     ETHEREUM_JSONRPC_VARIANT: geth
+  #     BLOCK_TRANSFORMER: clique
+  #     ETHEREUM_JSONRPC_HTTP_URL: http://client-1:8545/
+  #     ETHEREUM_JSONRPC_WS_URL: ws://client-1:8546
+  #     DATABASE_URL: postgresql://postgres:@db:5432/blockscout?ssl=false
+  #     ECTO_USE_SSL: "false"
+  #     SUBNETWORK: "Dev"
+  #     SECRET_KEY_BASE: VTIB3uHDNbvrY0+60ZWgUoUBKDn9ppLR8MI4CpRz4/qLyEFs54ktJfaNT6Z221No
+  #     DISABLE_EXCHANGE_RATES: "true"
+  #     INDEXER_DISABLE_BLOCK_REWARD_FETCHER: "true"
+  #     LINK_TO_OTHER_EXPLORERS: "false"
+  #     SUPPORTED_CHAINS: "[]"
+  #     APPS_MENU: 0
+  #     HIDE_FOOTER: 1
+  #     SHOW_DASHBOARD_GRAPH: 0
+  #     INDEXER_DISABLE_PENDING_TRANSACTIONS_FETCHER: 1
+  #     INDEXER_MEMORY_LIMIT: 2
+  #     SHOW_ADDRESS_MARKETCAP_PERCENTAGE: 0
+  #     DISABLE_READ_API: 0
+  #     DISABLE_WRITE_API: 0
+  #   ports:
+  #     - 8082:4000
+
+  # db:
+  #   image: postgres:13.12
+  #   restart: always
+  #   container_name: 'postgres'
+  #   environment:
+  #       POSTGRES_PASSWORD: ''
+  #       POSTGRES_USER: 'postgres'
+  #       POSTGRES_HOST_AUTH_METHOD: 'trust'
+  #   # ports:
+  #   #   - 7432:5432
     
-    volumes:
-      - db-data:/var/lib/postgresql/data
+  #   volumes:
+  #     - ./data/db-data:/var/lib/postgresql/data
 
   dashboard:
     hostname: dashboard
@@ -162,9 +166,9 @@ services:
     volumes:
       - ./ethstats-reporter/app.json:/opt/ethstats/app.json:ro
 
-volumes:
-  eth-data-1:
-  eth-data-2:
-  eth-data-3:
-  eth-data-4:
-  db-data:
+# volumes:
+#   eth-data-1:
+#   eth-data-2:
+#   eth-data-3:
+#   eth-data-4:
+#   db-data:
